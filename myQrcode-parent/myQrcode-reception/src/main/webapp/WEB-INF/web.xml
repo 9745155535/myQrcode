@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
+  <display-name>reception</display-name>
+  <welcome-file-list>
+    <welcome-file>use.jsp</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <!-- 加载上下文context -->
+  <context-param>
+  		<param-name>contextConfigLocation</param-name>
+  		<param-value>classpath:/applicationContext.xml</param-value>
+  </context-param>
+  <listener>
+  	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <!-- 注册前端控制器，加载sqringmvc上下文 -->
+ <servlet>
+  		<servlet-name>SpringMVC</servlet-name>  
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>  
+        <init-param>  
+		<param-name>contextConfigLocation</param-name>  
+		<param-value>classpath:/sqringmvc.xml</param-value>  
+        </init-param>  
+        <load-on-startup>1</load-on-startup>  
+        <async-supported>true</async-supported>  
+ </servlet>
+  <!-- 设置前面注册的前端控制器的处理器映射 -->
+  <servlet-mapping>
+  		<servlet-name>SpringMVC</servlet-name>
+  		<!-- 配置所有以action结尾的请求进入SpringMVC -->
+  		<url-pattern>*.action</url-pattern>
+  </servlet-mapping>
+  <session-config> 
+ 		<session-timeout>15</session-timeout> 
+  </session-config> 
+</web-app>

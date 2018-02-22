@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lijj.common.mapper.GoodsInfoMapper" >
+
+	<update id="create"  >
+	CREATE TABLE ${Tap} (
+		`id`  int NOT NULL AUTO_INCREMENT ,
+		`goodsId`  varchar(255) NOT NULL ,
+		`frimId`  varchar(255) NOT NULL ,
+		`indexItme`  varchar(255) NOT NULL ,
+		`goodsName`  varchar(255) NOT NULL ,
+		`icon`  varchar(255) NULL ,
+		`introduction`  varchar(255) NULL ,
+		`allNumber`  int  NOT NULL DEFAULT 0,
+		`useNumber`  int  NOT NULL DEFAULT 0,
+		`time` datetime NOT NULL ,
+		PRIMARY KEY (`id`),
+		INDEX `index` (`goodsId`) USING HASH 
+	);
+	</update>
+	<select id="sort" resultType="com.lijj.common.pojo.GoodsInfo">
+		select * from ${Tap} order by useNumber desc limit ${count},${fixed} 
+	</select>
+	
+	<select id="find_key"  resultType="com.lijj.common.pojo.GoodsInfo"  >
+		select * from ${Tap} where goodsName like '%${key}%'
+	</select>
+	<select id="pagingFind"  resultType="com.lijj.common.pojo.GoodsInfo"  >
+		SELECT * FROM ${Tap} limit ${count},${fixed}		
+	</select>
+	<select id="count"  resultType="long"  >
+		SELECT count(*) FROM ${Tap}		
+	</select>
+	<select id="find"  resultType="com.lijj.common.pojo.GoodsInfo"  >
+		SELECT *
+  			FROM ${Tap}
+  			WHERE goodsId in
+  				<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+        			#{item}
+ 			 	</foreach>
+	</select>
+	<select id="find_id"  resultType="com.lijj.common.pojo.GoodsInfo"  >
+		SELECT *
+  			FROM ${Tap}
+  			WHERE frimId in
+  				<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+        			#{item}
+ 			 	</foreach>
+	</select>
+	<select id="all"  resultType="com.lijj.common.pojo.GoodsInfo"  >
+		SELECT *	FROM ${Tap}
+	</select>
+	<select id="del" >
+		DELETE FROM ${Tap}
+  			WHERE goodsId in
+  				<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+        			#{item}
+ 			 	</foreach>
+	</select>
+	
+	<insert id="insert"  >
+		INSERT INTO ${Tap}(goodsId,frimId,indexItme,goodsName,introduction,icon,allNumber,useNumber,time)
+				values(#{date.goodsId},#{date.frimId},#{date.indexItme},#{date.goodsName},#{date.introduction},#{date.icon},#{date.allNumber},#{date.useNumber},#{date.time});
+	</insert>
+	
+	
+	<update id="upDate"  >
+		UPDATE ${Tap}
+ 			<trim prefix="set" suffixOverrides=",">
+  				<if test="date.goodsName!=null">goodsName=#{date.goodsName},</if>
+  				<if test="date.frimId!=null">frimId=#{date.frimId},</if>
+  				<if test="date.indexItme!=null">indexItme=#{date.indexItme},</if>
+  				<if test="date.introduction!=null">introduction=#{date.introduction},</if>
+  				<if test="date.icon!=null">icon=#{date.icon},</if>
+  				<if test="date.allNumber!=null">allNumber=#{date.allNumber},</if>
+  				<if test="date.useNumber!=null">useNumber=#{date.useNumber},</if>
+ 			</trim>
+ 		WHERE goodsId=#{date.goodsId}
+	</update>
+</mapper>

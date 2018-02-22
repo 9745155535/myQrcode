@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lijj.common.mapper.LogMapper">
+
+	<update id="create">
+	CREATE TABLE if not exists log (
+		`id`  int NOT NULL AUTO_INCREMENT,
+		`adminName`  varchar(255) NOT NULL ,
+		`even`  varchar(255) NOT NULL ,
+		`time`  datetime NOT NULL ,
+		PRIMARY KEY (`id`),
+		INDEX (`adminName`) USING BTREE
+	);
+	</update>
+	
+	<select id="find_admin"  resultType="com.lijj.common.pojo.Log">
+		SELECT *
+  			FROM log
+  			WHERE adminName in
+  				<foreach item="item" index="index" collection="List" open="(" separator="," close=")">
+        			#{item}
+ 			 	</foreach>
+	</select>
+	<select id="find_time"  resultType="com.lijj.common.pojo.Log">
+		SELECT *
+  			FROM log  
+        	<where>  
+        		<if test="beginTime!=null and beginTime!=''">  
+          			time &gt;= #{beginTime}    
+        		</if>  
+        		<if test="endTime!=null and endTime!='' ">  
+       				and  time &lt;= #{endTime}  
+        		</if>  
+      		</where>    
+	</select>
+	
+	<insert id="insert" parameterType="com.lijj.common.pojo.Log">
+		INSERT INTO log(adminName,even,time)
+				values(#{date.adminName},#{date.even},#{date.time});
+	</insert>
+	
+	
+</mapper>

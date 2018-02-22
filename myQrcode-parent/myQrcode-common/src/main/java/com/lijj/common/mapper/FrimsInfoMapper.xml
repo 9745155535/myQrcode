@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lijj.common.mapper.FrimsInfoMapper">
+
+	<update id="create" >
+	CREATE TABLE ${Tap} (
+		`id`  int NOT NULL AUTO_INCREMENT ,
+		`frimId`  varchar(255) NOT NULL ,
+		`frimName`  varchar(255) NOT NULL ,
+		`introduction`  varchar(255) NULL ,
+		`icon`  varchar(255) NULL ,
+		`web`  varchar(255) NULL ,
+		`email`  varchar(255) NULL ,
+		`wx`  varchar(255) NULL ,
+		`number`  int  NOT NULL DEFAULT 0,
+		`allNumber`  int  NOT NULL DEFAULT 0,
+		`useNumber`  int  NOT NULL DEFAULT 0,
+		`time` datetime not NULL ,
+		PRIMARY KEY (`id`),
+		INDEX `index` (`frimId`) USING HASH 
+	);
+	</update>
+	
+	<select id="find_key"  resultType="com.lijj.common.pojo.FrimsInfo">
+		select * from ${Tap} where frimName like '%${key}%'
+	</select>
+	<select id="all"  resultType="com.lijj.common.pojo.FrimsInfo">
+		select * from ${Tap} 
+	</select>
+	<select id="find"  resultType="com.lijj.common.pojo.FrimsInfo">
+		SELECT *
+  			FROM ${Tap}
+  			WHERE frimId in
+  				<foreach item="item" index="index" collection="List" open="(" separator="," close=")">
+        			#{item}
+ 			 	</foreach>
+	</select>
+	
+	<insert id="insert" >
+		INSERT INTO ${Tap}(frimId,frimName,introduction,icon,web,email,wx,number,allNumber,useNumber,time)
+				values(#{date.frimId},#{date.frimName},#{date.introduction},#{date.icon},#{date.web},#{date.email},#{date.wx},#{date.number},#{date.allNumber},#{date.useNumber},#{date.time});
+	</insert>
+	<select id="count"  resultType="long"  >
+		SELECT count(*) FROM ${Tap}		
+	</select>
+	<select id="pagingFind"  resultType="com.lijj.common.pojo.FrimsInfo"  >
+		SELECT * FROM ${Tap} limit ${count},${fixed}		
+	</select>
+	<update id="upDate" >
+		UPDATE ${Tap}
+ 			<trim prefix="set" suffixOverrides=",">
+  				<if test="date.frimName!=null">frimName=#{date.frimName},</if>
+  				<if test="date.introduction!=null">introduction=#{date.introduction},</if>
+  				<if test="date.icon!=null">icon=#{date.icon},</if>
+  				<if test="date.web!=null">web=#{date.web},</if>
+  				<if test="date.email!=null">email=#{date.email},</if>
+  				<if test="date.wx!=null">wx=#{date.wx},</if>
+  				<if test="date.number!=null">number=#{date.number},</if>
+  				<if test="date.allNumber!=null">allNumber=#{date.allNumber},</if>
+  				<if test="date.useNumber!=null">useNumber=#{date.useNumber},</if>
+ 			</trim>
+ 		WHERE frimId=#{date.frimId}
+	</update>
+	<select id="del" >
+		DELETE FROM ${Tap}
+  			WHERE frimId in
+  				<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+        			#{item}
+ 			 	</foreach>
+	</select>
+</mapper>

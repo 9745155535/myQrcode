@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lijj.common.mapper.AdminMapper">
+
+	<update id="create" >
+	CREATE TABLE if not exists `admin` (
+		`id`  int NOT NULL AUTO_INCREMENT ,
+		`allLenght`  int NOT NULL DEFAULT 0,
+		`useLenght`  int NOT NULL DEFAULT 0,
+		`itemLenght`  int NOT NULL DEFAULT 0,
+		`web`  varchar(255) NOT NULL ,
+		`email`  varchar(255) NOT NULL ,
+		`wx`  varchar(255) NOT NULL ,
+		`userName`  varchar(255) NOT NULL ,
+		`passWord`  varchar(255) NOT NULL ,
+		`frimInfo`  varchar(255) NOT NULL ,
+		`goodsInfo`  varchar(255) NOT NULL ,
+		`goods`  varchar(255) NOT NULL ,
+		`imgName`  varchar(255) NULL ,
+		`downLog`  varchar(255) NOT NULL ,
+		`time`  datetime NOT NULL ,
+		PRIMARY KEY (`id`),
+		INDEX `index` (`userName`) USING HASH 
+	);
+	</update>
+	<select id="existTable" resultType="Integer">  
+        select count(1)  
+        from sys.systables  
+        where LCASE(admin)=admin
+    </select>  
+	<select id="find"  resultType="com.lijj.common.pojo.Admin" >
+	SELECT * From admin where userName=#{userName}
+	</select>
+	
+	<insert id="insert" >
+		INSERT INTO admin(allLenght,useLenght,itemLenght,web,email,wx,userName,passWord,frimInfo,goodsInfo,goods,imgName,downLog,time)
+				values(#{date.allLenght},#{date.useLenght},#{date.itemLenght},#{date.web},#{date.email},#{date.wx},#{date.userName},#{date.passWord},#{date.frimInfo},#{date.goodsInfo},#{date.goods},#{date.imgName},#{date.downLog},#{date.time});
+	</insert>
+	<update id="upDate" >
+		UPDATE admin
+ 			<trim prefix="set" suffixOverrides=",">
+ 				<if test="date.allLenght!=null">allLenght=#{date.allLenght},</if>
+  				<if test="date.useLenght!=null">useLenght=#{date.useLenght},</if>
+  				<if test="date.itemLenght!=null">itemLenght=#{date.itemLenght},</if>
+  				<if test="date.web!=null">web=#{date.web},</if>
+  				<if test="date.email!=null">email=#{date.email},</if>
+  				<if test="date.wx!=null">wx=#{date.wx},</if>
+  				<if test="date.passWord!=null">passWord=#{date.passWord},</if>
+  				<if test="date.imgName!=null">imgName=#{date.imgName},</if>
+ 			</trim>
+ 		WHERE userName=#{date.userName}
+	</update>
+</mapper>

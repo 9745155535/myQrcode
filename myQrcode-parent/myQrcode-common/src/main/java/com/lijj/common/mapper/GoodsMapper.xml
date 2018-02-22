@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lijj.common.mapper.GoodsMapper">
+
+	<update id="create" >
+	CREATE TABLE ${Tap} (
+		`id`  int NOT NULL AUTO_INCREMENT,
+		`qrcode`  varchar(255) NOT NULL ,
+		`goodsId`  varchar(255) NOT NULL ,
+		`creadTime`  datetime NOT NULL ,
+		`useTime`  datetime NULL ,
+		`Judge`  tinyint NOT NULL DEFAULT 0 ,
+		`length`  int  NOT NULL DEFAULT 0,
+		PRIMARY KEY (`id`),
+		INDEX (`qrcode`) USING HASH 
+	);
+	</update>
+	
+	<select id="find"  resultType="com.lijj.common.pojo.Goods">
+		SELECT *
+  			FROM ${Tap}
+  			WHERE qrcode =#{qrcode}	
+	</select>
+	
+	<select id="find_time"  resultType="com.lijj.common.pojo.Goods">
+		SELECT *
+  			FROM ${Tap}  
+        	<where>  
+        		<if test="beginTime!=null and beginTime!=''">  
+          			useTime &gt;= #{beginTime}    
+        		</if>  
+        		<if test="endTime!=null and endTime!='' ">  
+       				and  useTime &lt;= #{endTime}  
+        		</if>  
+      		</where>    
+	</select>
+	<select id="find_time_all"  resultType="long">
+		SELECT  count(*)
+  			FROM ${Tap}  
+        	<where>  
+        		<if test="beginTime!=null and beginTime!=''">  
+          			creadTime &gt;= #{beginTime}    
+        		</if>  
+        		<if test="endTime!=null and endTime!='' ">  
+       				and  creadTime &lt;= #{endTime}  
+        		</if>  
+      		</where>    
+	</select>
+	<select id="find_time_lenght"  resultType="long">
+		SELECT count(*)
+  			FROM ${Tap}  
+        	<where>  
+        		<if test="beginTime!=null and beginTime!=''">  
+          			useTime &gt;= #{beginTime}    
+        		</if>  
+        		<if test="endTime!=null and endTime!='' ">  
+       				and  useTime &lt;= #{endTime}  
+        		</if>  
+      		</where>    
+	</select>
+	<select id="time_id_all"  resultType="long">
+		SELECT count(*)
+  			FROM ${Tap}  
+        	<where>  
+        			goodsId=#{goodsId}
+        		<if test="beginTime!=null and beginTime!=''">  
+          			and creadTime &gt;= #{beginTime}    
+        		</if>  
+        		<if test="endTime!=null and endTime!='' ">  
+       				and  creadTime &lt;= #{endTime}  
+        		</if>  
+      		</where>    
+	</select>
+	<select id="time_frimId_all"  resultType="long">
+		SELECT count(*)
+  			FROM ${Tap}  
+        	<where>  
+        			frimId=#{frimId}
+        		<if test="beginTime!=null and beginTime!=''">  
+          			and creadTime &gt;= #{beginTime}    
+        		</if>  
+        		<if test="endTime!=null and endTime!='' ">  
+       				and  creadTime &lt;= #{endTime}  
+        		</if>  
+      		</where>    
+	</select>
+	<select id="time_id_use"  resultType="long">
+		SELECT count(*)
+  			FROM ${Tap}  
+        	<where>  
+        			goodsId=#{goodsId} 
+        		<if test="beginTime!=null and beginTime!=''">  
+          			and useTime &gt;= #{beginTime}    
+        		</if>  
+        		<if test="endTime!=null and endTime!='' ">  
+       				and  useTime &lt;= #{endTime}  
+        		</if>  
+      		</where>    
+	</select>
+	<select id="find_id_lenght"  resultType="long">
+		SELECT count(*)
+  			FROM ${Tap}  
+        	where goodsId=#{goodsId}
+	</select>
+	<select id="find_judge_lenght"  resultType="long">
+		SELECT count(*)
+  			FROM ${Tap}  
+        	where judge=#{judge} and goodsId=#{goodsId}
+	</select>
+	<insert id="insert" parameterType="com.lijj.common.pojo.Goods">
+		INSERT INTO ${Tap}(qrcode,goodsId,creadTime,useTime,judge,length)
+				values(#{date.qrcode},#{date.goodsId},#{date.creadTime},#{date.useTime},#{date.judge},#{date.length});
+	</insert>
+	
+	
+	<update id="upDate" parameterType="com.lijj.common.pojo.Goods">
+		UPDATE ${Tap}
+ 			<trim prefix="set" suffixOverrides=",">
+  				<if test="date.useTime!=null">useTime=#{date.useTime},</if>
+  				<if test="date.judge!=null">judge=#{date.judge},</if>
+  				<if test="date.length!=null">length=#{date.length},</if>
+ 			</trim>
+ 		WHERE qrcode=#{date.qrcode}
+	</update>
+	<select id="del" >
+		DELETE FROM ${Tap}
+  			WHERE goodsId in
+  				<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+        			#{item}
+ 			 	</foreach>
+	</select>
+	<select id="delQr" >
+		DELETE FROM ${Tap}
+  			WHERE qrcode in
+  				<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+        			#{item}
+ 			 	</foreach>
+	</select>
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lijj.common.mapper.DownLogMapper">
+
+	<update id="create" >
+	CREATE TABLE ${Tap} (
+		`id`  int NOT NULL AUTO_INCREMENT ,
+		`length`  varchar(255) NOT NULL ,
+		`fileName`  varchar(255) NOT NULL ,
+		`frimId`  varchar(255) NOT NULL ,
+		`goodsId`  varchar(255) NOT NULL ,
+		`time`  datetime NOT NULL ,
+		PRIMARY KEY (`id`)
+		
+	);
+	</update>
+	<select id="sort" resultType="com.lijj.common.pojo.DownLog">
+		select * from ${Tap} order by time desc limit ${count},${fixed}
+	</select>
+	<select id="find"  resultType="com.lijj.common.pojo.DownLog" >
+		SELECT * From ${Tap} limit ${count},${fixed}
+	</select>
+	<select id="find_frimId"  resultType="com.lijj.common.pojo.DownLog" >
+		SELECT * From ${Tap} WHERE frimId=#{frimId} 
+	</select>
+	<select id="find_goodsId"  resultType="com.lijj.common.pojo.DownLog" >
+		SELECT * From ${Tap} WHERE goodsId=#{goodsId} 
+	</select>
+	<select id="count"  resultType="long" >
+		SELECT count(*) From ${Tap}
+	</select>
+	<select id="pagingFind"  resultType="com.lijj.common.pojo.DownLog"  >
+		SELECT * FROM ${Tap} limit ${count},${fixed}		
+	</select>
+	<insert id="insert" >
+		INSERT INTO ${Tap}(length,fileName,frimId,goodsId,time)
+				values(#{date.length},#{date.fileName},#{date.frimId},#{date.goodsId},#{date.time});
+	</insert>
+	<select id="del" >
+		DELETE FROM ${Tap}
+  			WHERE goodsId in
+  				<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+        			#{item}
+ 			 	</foreach>
+	</select>
+	<update id="upDate" >
+		UPDATE ${Tap}
+ 			<trim prefix="set" suffixOverrides=",">
+  				<if test="date.frimId!=null">frimId=#{date.frimId},</if>
+ 			</trim>
+ 		WHERE goodsId=#{date.goodsId}
+	</update>
+	
+</mapper>
